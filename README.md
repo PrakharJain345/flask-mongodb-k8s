@@ -135,6 +135,8 @@ horizontalpodautoscaler.autoscaling/flask-hpa created
 
 The Flask application is exposed to the host on NodePort **30007** (mapped to container port 5000).
 
+![Endpoints and Persistence Verification](screenshots/endpoints-verification.png)
+
 ### 6.1 `GET /` - Root Index
 ```bash
 curl -i http://localhost:30007/
@@ -408,6 +410,9 @@ pod/flask-app-b9f466d4-rgcnh   1/1     Running   2          6m26s
 pod/mongo-0                    1/1     Running   0          19m
 ```
 
+### Autoscaling Verification Terminal Capture
+![HPA Autoscaling Under Load](screenshots/hpa-autoscaling.png)
+
 ---
 
 ## 12. Real Issues Encountered & How They Were Resolved
@@ -468,6 +473,9 @@ rm metrics-patch.yaml
 ├── load-test/
 │   ├── load.sh                  # Load testing script
 │   └── payload.json             # Sample JSON payload for POST /data
+├── screenshots/
+│   ├── autoscaling-hpa.png      # Real terminal capture of HPA scaling to 5 pods
+│   └── endpoints-verification.png # Real terminal capture of endpoint & persistence tests
 ├── Dockerfile                   # Hardened, non-root multi-layer build
 ├── .dockerignore                # Excludes venv, git, and local k8s files
 ├── .gitignore                   # Standard ignore rules
