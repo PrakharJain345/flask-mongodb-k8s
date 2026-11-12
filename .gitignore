@@ -1,0 +1,12 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.DS_Store
+*.log
+PRD*.md
+TECHSTACK*.md
+
+
