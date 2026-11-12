@@ -12,29 +12,29 @@ The system consists of two primary workloads deployed on a local Kubernetes clus
 ### Architecture Diagram
 
 ```mermaid
-graph TD
-    User([Client / Browser / curl]) -->|NodePort :30007| FlaskSvc[Service: flask-svc<br/>Type: NodePort :30007 -> 5000]
+flowchart TD
+    User["Client / Browser / curl"] -->|"NodePort :30007"| FlaskSvc["Service: flask-svc<br/>Type: NodePort :30007"]
     
-    subgraph Kubernetes Cluster
-        FlaskSvc --> Pod1[Pod: flask-app-1]
-        FlaskSvc --> Pod2[Pod: flask-app-2]
-        FlaskSvc -.-> PodN[Pod: flask-app-N (Up to 5 replicas)]
+    subgraph Cluster["Kubernetes Cluster"]
+        FlaskSvc --> Pod1["Pod: flask-app-1"]
+        FlaskSvc --> Pod2["Pod: flask-app-2"]
+        FlaskSvc -.-> PodN["Pod: flask-app-N (Up to 5 replicas)"]
         
-        HPA[Horizontal Pod Autoscaler<br/>Target: 70% CPU<br/>Min: 2 | Max: 5] -.->|Scales Deployment| Deployment[Deployment: flask-app]
-        MetricsServer[Metrics Server] -.->|Provides Metrics| HPA
+        HPA["Horizontal Pod Autoscaler<br/>Target: 70% CPU<br/>Min: 2 | Max: 5"] -.->|"Scales Deployment"| Deployment["Deployment: flask-app"]
+        MetricsServer["Metrics Server"] -.->|"Provides Metrics"| HPA
         
-        Pod1 -->|Internal DNS: mongo-svc:27017| MongoSvc[Headless Service: mongo-svc<br/>ClusterIP: None]
-        Pod2 -->|Internal DNS: mongo-svc:27017| MongoSvc
-        PodN -->|Internal DNS: mongo-svc:27017| MongoSvc
+        Pod1 -->|"Internal DNS: mongo-svc:27017"| MongoSvc["Headless Service: mongo-svc<br/>ClusterIP: None"]
+        Pod2 -->|"Internal DNS: mongo-svc:27017"| MongoSvc
+        PodN -->|"Internal DNS: mongo-svc:27017"| MongoSvc
         
-        MongoSvc --> MongoPod[StatefulSet Pod: mongo-0<br/>Image: mongo:6.0<br/>Auth: Enabled]
+        MongoSvc --> MongoPod["StatefulSet Pod: mongo-0<br/>Image: mongo:6.0<br/>Auth: Enabled"]
         
-        Secret[Secret: mongo-secret<br/>User: admin<br/>Password: changeme123] -->|Injected as Env Vars| Pod1
-        Secret -->|Injected as Env Vars| Pod2
-        Secret -->|Injected as Env Vars| MongoPod
+        Secret["Secret: mongo-secret<br/>User: admin<br/>Password: changeme123"] -->|"Injected as Env Vars"| Pod1
+        Secret -->|"Injected as Env Vars"| Pod2
+        Secret -->|"Injected as Env Vars"| MongoPod
         
-        MongoPod -->|Mounted at /data/db| PVC[PersistentVolumeClaim: mongo-pvc]
-        PVC -->|Bound (1Gi, Retain)| PV[PersistentVolume: mongo-pv<br/>hostPath: /data/mongo-data]
+        MongoPod -->|"Mounted at /data/db"| PVC["PersistentVolumeClaim: mongo-pvc"]
+        PVC -->|"Bound 1Gi, Retain"| PV["PersistentVolume: mongo-pv<br/>hostPath: /data/mongo-data"]
     end
 ```
 
